@@ -16,10 +16,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cupertinoTheme = CupertinoThemeData(
+      primaryColor: Color(0xff127EFB),
+    );
+
     final materialTheme = ThemeData(
-      cupertinoOverrideTheme: CupertinoThemeData(
-        primaryColor: Color(0xff127EFB),
-      ),
       primarySwatch: Colors.green,
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
@@ -29,8 +30,10 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return Theme(
-      data: materialTheme,
+    return PlatformTheme(
+      //primaryColor: Colors.green, // both platforms will get this color
+      materialTheme: materialTheme,
+      cupertinoTheme: cupertinoTheme,
       child: PlatformProvider(
         settings: PlatformSettingsData(iosUsesMaterialWidgets: true),
         builder: (context) => PlatformApp(
@@ -41,14 +44,6 @@ class MyApp extends StatelessWidget {
           ],
           title: 'Flutter Platform Widgets',
           home: PlatformPage(),
-          material: (_, __) => MaterialAppData(
-            theme: materialTheme,
-          ),
-          cupertino: (_, __) => CupertinoAppData(
-            theme: CupertinoThemeData(
-              primaryColor: Color(0xff127EFB),
-            ),
-          ),
         ),
       ),
     );
@@ -79,7 +74,6 @@ class PlatformPage extends StatelessWidget {
                 }),
           ),
           Divider(thickness: 10),
-
           // ! PlatformText
           PlatformWidgetExample(
             title: 'PlatformText',
@@ -188,6 +182,7 @@ class PlatformPage extends StatelessWidget {
               ),
             ),
           ),
+
           // ! PlatformIconButton
           PlatformWidgetExample(
             title: 'PlatformIconButton',

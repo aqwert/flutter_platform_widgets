@@ -4,9 +4,11 @@
  * See LICENSE for distribution and usage details.
  */
 
-import 'package:flutter/cupertino.dart' show CupertinoApp, CupertinoThemeData;
+import 'package:flutter/cupertino.dart'
+    show CupertinoApp, CupertinoTheme, CupertinoThemeData;
 import 'package:flutter/material.dart'
     show MaterialApp, ScaffoldMessengerState, Theme, ThemeData, ThemeMode;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'platform.dart';
@@ -578,6 +580,11 @@ class PlatformApp extends PlatformWidgetBase<CupertinoApp, MaterialApp> {
       );
     } else {
       final data = material?.call(context, platform(context));
+      final themeData = Theme.of(context);
+      final lightTheme =
+          themeData.brightness == Brightness.light ? themeData : null;
+      final darkTheme =
+          themeData.brightness == Brightness.dark ? themeData : null;
       return MaterialApp(
         key: data?.widgetKey ?? widgetKey,
         navigatorKey: data?.navigatorKey ?? navigatorKey,
@@ -616,10 +623,11 @@ class PlatformApp extends PlatformWidgetBase<CupertinoApp, MaterialApp> {
         debugShowCheckedModeBanner: data?.debugShowCheckedModeBanner ??
             debugShowCheckedModeBanner ??
             true,
-        theme: (data?.theme ?? Theme.of(context))
-            .copyWith(platform: TargetPlatform.android),
+        theme: (data?.theme ?? lightTheme)
+            ?.copyWith(platform: TargetPlatform.android),
         debugShowMaterialGrid: data?.debugShowMaterialGrid ?? false,
-        darkTheme: data?.darkTheme?.copyWith(platform: TargetPlatform.android),
+        darkTheme: (data?.darkTheme ?? darkTheme)
+            ?.copyWith(platform: TargetPlatform.android),
         themeMode: data?.themeMode ?? ThemeMode.system,
         shortcuts: data?.shortcuts ?? shortcuts,
         actions: data?.actions ?? actions,
@@ -727,7 +735,7 @@ class PlatformApp extends PlatformWidgetBase<CupertinoApp, MaterialApp> {
         debugShowCheckedModeBanner: data?.debugShowCheckedModeBanner ??
             debugShowCheckedModeBanner ??
             true,
-        theme: data?.theme,
+        theme: data?.theme ?? CupertinoTheme.of(context),
         shortcuts: data?.shortcuts ?? shortcuts,
         actions: data?.actions ?? actions,
         onGenerateInitialRoutes:
